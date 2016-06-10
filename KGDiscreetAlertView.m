@@ -22,9 +22,9 @@ static NSTimeInterval const kDelay = 3;
 - (instancetype)init{
     if((self = [super init])){
         UILabel *label = [[UILabel alloc] init];
-        label.lineBreakMode = UILineBreakModeWordWrap;
+        label.lineBreakMode = NSLineBreakByWordWrapping;
         label.backgroundColor = [UIColor clearColor];
-        label.textAlignment = UITextAlignmentCenter;
+        label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor whiteColor];
         label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
         label.shadowOffset = CGSizeMake(0, 1);
@@ -56,10 +56,11 @@ static NSTimeInterval const kDelay = 3;
 }
 
 - (void)sizeLabel:(UILabel *)label toFitTextWithWidth:(CGFloat)width{
-    CGSize textSize =
-    [label.text sizeWithFont:label.font
-           constrainedToSize:CGSizeMake(width, MAXFLOAT)
-               lineBreakMode:label.lineBreakMode];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = label.lineBreakMode;
+    NSDictionary *attributes = @{NSFontAttributeName:label.font, NSParagraphStyleAttributeName:paragraphStyle};
+    CGRect textFrame = [label.text boundingRectWithSize:CGSizeMake(width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil];
+    CGSize textSize = textFrame.size;
     label.numberOfLines = ceil(textSize.height/label.font.lineHeight);
     CGRect frame = label.frame;
     frame.size = textSize;
