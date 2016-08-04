@@ -12,6 +12,8 @@ static CGFloat const kPadding = 12;
 static NSTimeInterval const kAnimation = 0.25;
 static NSTimeInterval const kDelay = 3;
 
+NSString *const KGDiscreetAlertViewTappedToHideNotification = @"KGDiscreetAlertViewTappedToHideNotification";
+
 @interface KGDiscreetAlertView()
 @property (weak, nonatomic) UILabel *label;
 @property (nonatomic) BOOL willHide;
@@ -44,6 +46,7 @@ static NSTimeInterval const kDelay = 3;
 
 - (void)tapAction:(UIGestureRecognizer *)gestureRecagnizer{
     if(self.tapToHide){
+        [[NSNotificationCenter defaultCenter] postNotificationName:KGDiscreetAlertViewTappedToHideNotification object:self];
         [self hide];
     }
 }
@@ -132,12 +135,13 @@ static NSTimeInterval const kDelay = 3;
 
 - (void)hide{
     self.willHide = YES;
+    __weak KGDiscreetAlertView *weakSelf = self;
     [UIView animateWithDuration:kAnimation animations:^{
         CGRect frame = self.frame;
         frame.origin.y = -CGRectGetHeight(frame);
-        self.frame = frame;
+        weakSelf.frame = frame;
     } completion:^(BOOL finished){
-        [self removeFromSuperview];
+        [weakSelf removeFromSuperview];
     }];
 }
 

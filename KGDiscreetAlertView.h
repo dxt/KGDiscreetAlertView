@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const KGDiscreetAlertViewTappedToHideNotification;
+
 @interface KGDiscreetAlertView : UIView
 
 @property (nonatomic) BOOL tapToHide;
